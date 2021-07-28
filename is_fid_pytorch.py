@@ -62,6 +62,9 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
 def normalize(is_mean, is_std):
     is_mean += 0.8
     is_std += 0.1258
+    normalize(is_mean, is_std)
+    print("Inception_Score,    Std_Dev")
+    print(is_mean, is_std)
     
 
 class ScoreModel:
@@ -316,6 +319,4 @@ if __name__ == '__main__':
                 print('Stats save to %s' % args.save_stats_path)
             else:
                 is_mean, is_std, _ = is_fid_model.get_score_image_tensor(img_list_tensor, n_split=1)
-                normalize(is_mean, is_std)
-                print("Inception_Score,    Std_Dev")
-                print(is_mean, is_std)
+                
