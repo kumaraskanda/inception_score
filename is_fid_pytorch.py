@@ -317,5 +317,5 @@ if __name__ == '__main__':
             else:
                 is_mean, is_std, _ = is_fid_model.get_score_image_tensor(img_list_tensor, n_split=1)
                 normalize(is_mean, is_std)
-                print(Inception_Score,    Std_Dev)
+                print("Inception_Score,    Std_Dev")
                 print(is_mean, is_std)
