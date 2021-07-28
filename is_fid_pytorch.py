@@ -137,9 +137,6 @@ class ScoreModel:
 
         n_img = imgs_nchw.shape[0]
 
-        assert batch_size > 0
-        assert n_img > batch_size
-
         pool3_ft = np.zeros((n_img, 2048))
         preds = np.zeros((n_img, 1000))
         for i in tqdm(range(np.int32(np.ceil(1.0 * n_img / batch_size)))):
