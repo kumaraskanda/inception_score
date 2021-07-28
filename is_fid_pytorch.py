@@ -131,11 +131,12 @@ class ScoreModel:
         return mu, sigma
 
     def get_score_image_tensor(self, imgs_nchw, mu1=0, sigma1=0,
-                               n_split=10, batch_size=32, return_stats=False,
+                               n_split=10, batch_size=8, return_stats=False,
                                return_each_score=False):
 
 
         n_img = imgs_nchw.shape[0]
+
 
         pool3_ft = np.zeros((n_img, 2048))
         preds = np.zeros((n_img, 1000))
@@ -164,7 +165,7 @@ class ScoreModel:
             return is_mean, is_std, fid
 
     def get_score_dataset(self, dataset, mu1=0, sigma1=0,
-                          n_split=10, batch_size=32, return_stats=False,
+                          n_split=1, batch_size=8, return_stats=False,
                           return_each_score=False):
 
         n_img = len(dataset)
@@ -255,12 +256,12 @@ if __name__ == '__main__':
 
         if args.save_stats_path:
             is_mean, is_std, _, mu, sigma = is_fid_model.get_score_dataset(IgnoreLabelDataset(cifar),
-                                                                           n_split=10, return_stats=True)
+                                                                           n_split=1, return_stats=True)
             print(is_mean, is_std)
             np.savez_compressed(args.save_stats_path, mu=mu, sigma=sigma)
             print('Stats save to %s' % args.save_stats_path)
         else:
-            is_mean, is_std, _ = is_fid_model.get_score_dataset(IgnoreLabelDataset(cifar), n_split=10)
+            is_mean, is_std, _ = is_fid_model.get_score_dataset(IgnoreLabelDataset(cifar), n_split=1)
             print(is_mean, is_std)
 
     elif args.path.endswith('.npz') and args.fid.endswith('.npz'):
@@ -275,7 +276,7 @@ if __name__ == '__main__':
         if args.fid.endswith('.npz'):
             is_fid_model = ScoreModel(mode=2, stats_file=args.fid, cuda=True)
             img_list_tensor = read_folder(args.path)
-            is_mean, is_std, fid = is_fid_model.get_score_image_tensor(img_list_tensor, n_split=10)
+            is_mean, is_std, fid = is_fid_model.get_score_image_tensor(img_list_tensor, n_split=1)
             print(is_mean, is_std)
             print('FID =', fid)
 
@@ -287,12 +288,12 @@ if __name__ == '__main__':
 
             print('Calculating 1st stat ...')
             is_mean1, is_std1, _, mu1, sigma1 = \
-                is_fid_model.get_score_image_tensor(img_list_tensor1, n_split=10, return_stats=True)
+                is_fid_model.get_score_image_tensor(img_list_tensor1, n_split=1, return_stats=True)
 
             print('Calculating 2nd stat ...')
             is_mean2, is_std2, fid = is_fid_model.get_score_image_tensor(img_list_tensor2,
                                                                          mu1=mu1, sigma1=sigma1,
-                                                                         n_split=10)
+                                                                         n_split=1)
 
             print('1st IS score =', is_mean1, ',', is_std1)
             print('2nd IS score =', is_mean2, ',', is_std2)
@@ -305,10 +306,10 @@ if __name__ == '__main__':
 
             if args.save_stats_path:
                 is_mean, is_std, _, mu, sigma = is_fid_model.get_score_image_tensor(img_list_tensor,
-                                                                                    n_split=10, return_stats=True)
+                                                                                    n_split=1, return_stats=True)
                 print(is_mean, is_std)
                 np.savez_compressed(args.save_stats_path, mu=mu, sigma=sigma)
                 print('Stats save to %s' % args.save_stats_path)
             else:
-                is_mean, is_std, _ = is_fid_model.get_score_image_tensor(img_list_tensor, n_split=10)
+                is_mean, is_std, _ = is_fid_model.get_score_image_tensor(img_list_tensor, n_split=1)
                 print(is_mean, is_std)
